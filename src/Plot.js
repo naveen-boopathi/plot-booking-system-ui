@@ -3,10 +3,11 @@ import { ResponsiveHeatMap } from '@nivo/heatmap';
 import { data } from './plot-data';
 import Modal from 'react-modal';
 import './Plot.css';
+import axios from 'axios';
 
 export default class Plot extends React.Component {
     state = {
-        data: data,
+        data: [],
         hoverTarget: "cell",
         modalIsOpen: false,
         selectedCell: null,
@@ -18,12 +19,23 @@ export default class Plot extends React.Component {
         showErrorMessage: false,
         errorMessage: "Please enter a value!"
     }
+    componentDidMount() {
+        this.getAllSitesData();
+    }
+    getAllSitesData = () => {
+        axios.get("api/site").then((response) => {
+            if(response.data && response.data.length > 0) {
+                this.setState({data: response.data});
+            } else {
+                this.setState({data: [...data]});
+            }
+        })
+    }
     handleClick = (cell, event) => {
         if (cell.value === 100) {
             return;
         }
         const siteNumber = cell.id;
-        console.log(cell);
         const userInfo = this.state.usersDetail.filter((userDetail) => userDetail.siteNumber === siteNumber)
         const isBought = userInfo && userInfo.length > 0 ? true : false;
         if (isBought) {
@@ -63,9 +75,6 @@ export default class Plot extends React.Component {
         e.preventDefault();
         this.setState({ isBought: false });
     }
-    componentDidMount() {
-        console.log('did mount!');
-    }
     render() {
         const customStyles = {
             content: {
@@ -78,7 +87,6 @@ export default class Plot extends React.Component {
             }
         };
         const { data, hoverTarget, modalIsOpen, name, contactNumber, siteNumber, usersDetail, isBought, showErrorMessage, errorMessage } = this.state;
-        console.log('render');
         return (<Fragment>
             <Modal
                 ariaHideApp={false}
