@@ -54,7 +54,7 @@ export default class Plot extends React.Component {
         if (name && contactNumber) {
             if (selectedCell) {
                 const updatedData = data.map((eachData, index) => {
-                    if (eachData.site == selectedCell.yKey) {
+                    if (eachData.site === selectedCell.yKey) {
                         return { ...eachData, [selectedCell.xKey]: 50 }
                     }
                     return { ...eachData };
@@ -141,7 +141,7 @@ export default class Plot extends React.Component {
                     }}
                     onClick={(cell, event) => this.handleClick(cell, event)}
                     tooltip={({ xKey, yKey, value, color }) => {
-                        if (color == "#696969") {
+                        if (color === "#696969") {
                             // this.setState({hoverTarget: "row"});
                             return (
                                 <strong>
